@@ -1,0 +1,3297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ACCUQURA - Currency Exchange Platform</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #8b76e6;
+            --primary-light: #a594f3;
+            --primary-dark: #6a5acd;
+            --secondary: #8086ff;
+            --accent: #95dfff;
+            --light: #f8f4fc;
+            --success: #4ade80;
+            --warning: #fbbf24;
+            --danger: #f87171;
+            --dark: #1e293b;
+            --gray: #64748b;
+            --light-gray: #f1f5f9;
+            --purple:  #8b76e6;
+            --white: #ffffff;
+            --shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            --radius: 10px;
+            --navradius:20px;
+            --transition: all 0.2s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: #f8f7ff;
+            color: var(--dark);
+            min-height: 100vh;
+            line-height: 1.5;
+            font-size: 0.9rem;
+            overflow-x: hidden;
+        }
+        
+        /* Navigation Bar */
+        .navbar {
+            background: var(--purple);
+            padding: 0 30px;
+            box-shadow: var(--shadow);
+            position: relative;
+            top: 0;
+            z-index: 100;
+            border-bottom: 2px solid var(--light-gray);
+        }
+        
+        .nav-container {
+            max-width: 100%;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 60px;
+        }
+        
+        .logo {
+            color: var(--white);
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .nav-menu {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-item {
+            margin-left: 20px;
+        }
+        
+        .nav-link {
+            color: var(--white);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 12px;
+            border-radius: var(--navradius);
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            font-size: 0.85rem;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            background-color: var(--light);
+            color: var(--primary);
+        }
+        
+        .nav-link i {
+            margin-right: 6px;
+            font-size: 1rem;
+        }
+        
+        .notification-badge {
+            background-color: var(--danger);
+            color: var(--white);
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.65rem;
+            margin-left: 6px;
+        }
+        
+        .dashboard {
+            width: 100%;
+            min-height: calc(100vh - 60px);
+            padding: 20px;
+        }
+        
+        /* Section Styles */
+        .section {
+            display: none;
+        }
+        
+        .section.active {
+            display: block;
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: auto auto auto 1fr;
+            gap: 20px;
+            height: 100%;
+            max-width: 100%;
+        }
+        
+        /* User Profile */
+         .user-profile {
+            grid-column: 1 / -1;
+            display: flex;
+            align-items: center;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--secondary) 100%);
+            padding: 20px 25px;
+            border-radius: var(--radius);
+            
+            color: var(--white);
+        }
+        
+        .profile-circle {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--white);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+        .profile-info h2 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+        
+        .profile-info p {
+            color: var(--gray);
+            font-size: 0.8rem;
+        }
+        
+        /* Main Stats */
+        .main-stats {
+            grid-column: 1 / -1;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .stat-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            transition: var(--transition);
+            border-top: 3px solid transparent;
+            border: 3px solid var(--light-gray);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .stat-card.total-balance {
+            border-left-color: var(--accent);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-height: 160px;
+            background: linear-gradient(135deg, #f8fbff 0%, var(--white) 100%);
+        }
+        
+        .currency-selector {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+        }
+        
+        .currency-selector select {
+            padding: 8px 12px;
+            border: 1px solid var(--light-gray);
+            border-radius: 6px;
+            font-size: 0.85rem;
+            background: var(--white);
+            color: var(--dark);
+            box-shadow: var(--shadow);
+        }
+        
+        .stat-card.successful-trades {
+            border-top-color: var(--primary);
+        }
+        
+        .stat-card.pending {
+            border-top-color: var(--warning);
+        }
+        
+        .stat-title {
+            font-size: 0.8rem;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--gray);
+        }
+        
+        .stat-value {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--dark);
+        }
+        
+        .total-balance .total-value {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin: 10px 0;
+            color: var(--primary);
+        }
+        
+        /* Currency Balances Section */
+        .currency-balances {
+            grid-column: 1 / -1;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+        
+        .currency-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            transition: var(--transition);
+            border-top: 3px solid transparent;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-height: 140px;
+            border: 3px solid var(--light-gray);
+        }
+        
+        .currency-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .currency-card.usd {
+            border-top-color: var(--accent);
+        }
+        
+        .currency-card.mmk {
+            border-top-color: var(--secondary);
+        }
+        
+        .currency-card.thb {
+            border-top-color: var(--primary);
+        }
+        
+        .currency-card.jpy {
+            border-top-color: var(--warning);
+        }
+        
+        .currency-icon {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+        
+        .currency-card.usd .currency-icon {
+            color: var(--accent);
+        }
+        
+        .currency-card.mmk .currency-icon {
+            color: var(--secondary);
+        }
+        
+        .currency-card.thb .currency-icon {
+            color: var(--primary);
+        }
+        
+        .currency-card.jpy .currency-icon {
+            color: var(--warning);
+        }
+        
+        .currency-name {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--dark);
+        }
+        
+        .currency-amount {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--dark);
+        }
+        
+        .chart-section {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            border: 2px solid var(--light-gray);
+        }
+        
+        .chart-section h2 {
+            color: var(--dark);
+            margin-bottom: 15px;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+        
+        .chart-container {
+            height: 200px;
+            position: relative;
+        }
+        
+        .performance-section {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            border: 2px solid var(--light-gray);
+        }
+        
+        .performance-section h2 {
+            color: var(--dark);
+            margin-bottom: 15px;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+        
+        .performance-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .performance-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-radius: 6px;
+            background: var(--light);
+            transition: var(--transition);
+            border: 1px solid var(--light-gray);
+        }
+        
+        .performance-item:hover {
+            background: var(--accent);
+        }
+        
+        .currency {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .currency i {
+            color: var(--primary);
+        }
+        
+        .percentage {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+        
+        .actions-section {
+            grid-column: 1 / -1;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+        
+        .action-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 20px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            transition: var(--transition);
+            border: 2px solid var(--light-gray);
+        }
+        
+        .action-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--primary);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .action-card i {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .action-card.deposit i {
+            color: var(--success);
+        }
+        
+        .action-card.withdraw i {
+            color: var(--warning);
+        }
+        
+        .action-card.convert i {
+            color: var(--primary);
+        }
+        
+        .action-card h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .action-card p {
+            color: var(--gray);
+            font-size: 0.8rem;
+        }
+        
+        .exchange-section {
+            grid-column: 1 / -1;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        
+        .exchange-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            border: 2px solid var(--light-gray);
+        }
+        
+        .exchange-card:hover {
+            border-color: var(--primary);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .exchange-card h3 {
+            margin-bottom: 12px;
+            color: var(--dark);
+            font-size: 1rem;
+            font-weight: 600;
+        }
+        
+        .divider {
+            height: 1px;
+            background: var(--light-gray);
+            margin: 15px 0;
+        }
+        
+        /* Exchange Rate Table */
+        .exchange-rate-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        
+        .exchange-rate-table th {
+            text-align: left;
+            padding: 12px 15px;
+            border-bottom: 2px solid var(--light-gray);
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 0.85rem;
+        }
+        
+        .exchange-rate-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--light-gray);
+            font-size: 0.85rem;
+        }
+        
+        .exchange-rate-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .exchange-rate-table tr:hover {
+            background: var(--light);
+        }
+        
+        .rate-change {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .rate-change.up {
+            color: var(--success);
+        }
+        
+        .rate-change.down {
+            color: var(--danger);
+        }
+        
+        /* Action Forms */
+        .action-form {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 25px;
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+            display: none;
+            border: 2px solid var(--light-gray);
+            grid-column: 1 / -1;
+            position: relative;
+        }
+        
+        .form-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            justify-content: space-between;
+        }
+        
+        .form-title-section {
+            display: flex;
+            align-items: center;
+        }
+        
+        .form-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            color: var(--white);
+            font-size: 1.2rem;
+        }
+        
+        .form-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .close-icon {
+            background: none;
+            border: none;
+            color: var(--gray);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: var(--transition);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .close-icon:hover {
+            background: var(--light-gray);
+            color: var(--dark);
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            color: var(--dark);
+            font-size: 0.85rem;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--light-gray);
+            border-radius: 6px;
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(139, 118, 230, 0.1);
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        
+        .submit-btn {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: var(--white);
+            border: none;
+            border-radius: 6px;
+            padding: 12px 16px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            width: 100%;
+            margin-top: 10px;
+        }
+        
+        .submit-btn:hover {
+            opacity: 0.9;
+        }
+        
+        /* P2P Trade Section */
+        .p2p-trade-section {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 25px;
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+            border: 2px solid var(--light-gray);
+        }
+        
+        .p2p-tabs {
+            display: flex;
+            background: var(--light);
+            border-radius: var(--radius);
+            padding: 5px;
+            margin-bottom: 25px;
+            border: 1px solid var(--light-gray);
+        }
+        
+        .p2p-tab {
+            flex: 1;
+            text-align: center;
+            padding: 12px 0;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            border-radius: 6px;
+            color: var(--gray);
+        }
+        
+        .p2p-tab.active {
+            background: var(--white);
+            color: var(--primary);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--light-gray);
+        }
+        
+        .p2p-content {
+            display: none;
+        }
+        
+        .p2p-content.active {
+            display: block;
+        }
+        
+        /* Quick Stats */
+        .quick-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card.rate {
+            border-top-color: var(--accent);
+        }
+        
+        .stat-card.volume {
+            border-top-color: var(--secondary);
+        }
+        
+        .stat-card.trades {
+            border-top-color: var(--primary);
+        }
+        
+        .stat-card.users {
+            border-top-color: var(--warning);
+        }
+        
+        /* P2P Listings */
+        .p2p-listings {
+            display: grid;
+            gap: 15px;
+        }
+        
+        .p2p-listing {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            border: 2px solid var(--light-gray);
+            transition: var(--transition);
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 20px;
+        }
+        
+        .p2p-listing:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+            border-color: var(--primary-light);
+        }
+        
+        .listing-main {
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .trader-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 1rem;
+            color: var(--white);
+            border: 2px solid var(--light-gray);
+        }
+        
+        .listing-details {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .trader-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .trader-name {
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .trader-rating {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            color: var(--warning);
+            font-size: 0.8rem;
+        }
+        
+        .trade-amount {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--dark);
+        }
+        
+        .trade-description {
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+        
+        .trade-meta {
+            display: flex;
+            gap: 15px;
+            margin-top: 5px;
+        }
+    
+        .listing-rate {
+            text-align: center;
+            padding: 10px 15px;
+            background: var(--light);
+            border-radius: var(--radius);
+            font-weight: 600;
+            color: var(--primary);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-width: 120px;
+            border: 1px solid var(--light-gray);
+        }
+        
+        .rate-value {
+            font-size: 1.1rem;
+        }
+        
+        .rate-label {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+        
+        .listing-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            justify-content: center;
+        }
+        
+        .action-btn {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+        }
+        
+        .buy-all-btn {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: var(--white);
+        }
+        
+        .buy-partial-btn {
+            background: var(--light);
+            color: var(--primary);
+            border: 1px solid var(--primary);
+        }
+        
+        .action-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+        
+        .listing-progress {
+            grid-column: 1 / -1;
+            margin-top: 10px;
+        }
+        
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: var(--gray);
+            margin-bottom: 5px;
+        }
+        
+        .progress-bar {
+            height: 6px;
+            background: var(--light-gray);
+            border-radius: 3px;
+            overflow: hidden;
+            border: 1px solid var(--light-gray);
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: var(--primary);
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+        
+        /* Filter Section */
+        .filter-section {
+            background: var(--light);
+            border-radius: var(--radius);
+            padding: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border: 2px solid var(--light-gray);
+        }
+        
+        .filter-label {
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .filter-select {
+            padding: 8px 12px;
+            border: 1px solid var(--light-gray);
+            border-radius: 6px;
+            background: var(--white);
+            color: var(--dark);
+            font-size: 0.85rem;
+        }
+        
+        .create-trade-btn {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: var(--white);
+            border: none;
+            border-radius: 6px;
+            padding: 10px 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-left: auto;
+        }
+        
+        .create-trade-btn:hover {
+            opacity: 0.9;
+        }
+        
+        /* My Trades Section */
+        .my-trades-list {
+            display: grid;
+            gap: 15px;
+        }
+        
+        .trade-item {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            border: 2px solid var(--light-gray);
+            transition: var(--transition);
+        }
+        
+        .trade-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .trade-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .trade-type {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border: 1px solid var(--light-gray);
+        }
+        
+        .trade-type.buy {
+            background: rgba(74, 222, 128, 0.1);
+            color: var(--success);
+        }
+        
+        .trade-type.sell {
+            background: rgba(251, 191, 36, 0.1);
+            color: var(--warning);
+        }
+        
+        .trade-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .trade-amount {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--dark);
+        }
+        
+        .trade-currency {
+            font-size: 0.9rem;
+            color: var(--gray);
+            margin-top: 5px;
+        }
+        
+        .trade-rate {
+            text-align: center;
+            padding: 10px;
+            background: var(--light);
+            border-radius: var(--radius);
+            font-weight: 600;
+            color: var(--primary);
+            border: 1px solid var(--light-gray);
+        }
+        
+        .trade-status {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 15px;
+            border-top: 1px solid var(--light-gray);
+        }
+        
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border: 1px solid var(--light-gray);
+        }
+        
+        .status-completed {
+            background: rgba(74, 222, 128, 0.1);
+            color: var(--success);
+        }
+        
+        .status-pending {
+            background: rgba(251, 191, 36, 0.1);
+            color: var(--warning);
+        }
+        
+        /* User Profile Section */
+        .user-profile-section {
+            grid-column: 1 / -1;
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 25px;
+            box-shadow: var(--shadow);
+            border: 2px solid var(--light-gray);
+        }
+        
+        .profile-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        
+        .profile-avatar {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
+            font-weight: 600;
+            font-size: 2rem;
+            color: var(--white);
+            overflow: hidden;
+            border: 2px solid var(--light-gray);
+        }
+        
+        .profile-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .avatar-upload {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background: var(--primary);
+            color: var(--white);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 1px solid var(--light-gray);
+        }
+        
+        .avatar-upload:hover {
+            background: var(--primary-dark);
+        }
+        
+        .profile-info h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .profile-info p {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        .profile-stats {
+            display: flex;
+            gap: 20px;
+            margin-top: 10px;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .profile-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        
+        .profile-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 25px;
+            box-shadow: var(--shadow);
+            border: 2px solid var(--light-gray);
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            color: var(--white);
+            font-size: 1.2rem;
+            border: 1px solid var(--light-gray);
+        }
+        
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        /* Verification Status */
+        .verification-status {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background: var(--light);
+            border-radius: var(--radius);
+            margin-bottom: 20px;
+            border: 1px solid var(--light-gray);
+        }
+        
+        .verification-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--success);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            color: var(--white);
+            font-size: 1.2rem;
+            border: 1px solid var(--light-gray);
+        }
+        
+        .verification-details h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .verification-details p {
+            color: var(--gray);
+            font-size: 0.85rem;
+        }
+        
+        /* Security Settings */
+        .security-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        
+        .security-item:last-child {
+            border-bottom: none;
+        }
+        
+        .security-info h4 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .security-info p {
+            color: var(--gray);
+            font-size: 0.8rem;
+        }
+        
+        .security-status {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border: 1px solid var(--light-gray);
+        }
+        
+        .status-active {
+            background: rgba(74, 222, 128, 0.1);
+            color: var(--success);
+        }
+        
+        .status-inactive {
+            background: rgba(251, 191, 36, 0.1);
+            color: var(--warning);
+        }
+        
+        /* Payment Methods */
+        .payment-methods {
+            display: grid;
+            gap: 15px;
+        }
+        
+        .payment-method {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border: 1px solid var(--light-gray);
+            border-radius: var(--radius);
+            transition: var(--transition);
+        }
+        
+        .payment-method:hover {
+            border-color: var(--primary);
+        }
+        
+        .payment-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            color: var(--primary);
+            font-size: 1.2rem;
+            border: 1px solid var(--light-gray);
+        }
+        
+        .payment-details {
+            flex: 1;
+        }
+        
+        .payment-details h4 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .payment-details p {
+            color: var(--gray);
+            font-size: 0.8rem;
+        }
+        
+        .payment-action {
+            color: var(--primary);
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        /* Preferences */
+        .preference-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        
+        .preference-item:last-child {
+            border-bottom: none;
+        }
+        
+        .preference-info h4 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .preference-info p {
+            color: var(--gray);
+            font-size: 0.8rem;
+        }
+        
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--light-gray);
+            transition: .4s;
+            border-radius: 24px;
+            border: 1px solid var(--light-gray);
+        }
+        
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .toggle-slider {
+            background-color: var(--primary);
+        }
+        
+        input:checked + .toggle-slider:before {
+            transform: translateX(20px);
+        }
+        
+        /* Notifications Section */
+        .notifications-section {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 25px;
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+            border: 2px solid var(--light-gray);
+        }
+        
+        .notification-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid var(--light-gray);
+            transition: var(--transition);
+        }
+        
+        .notification-item:last-child {
+            border-bottom: none;
+        }
+        
+        .notification-item:hover {
+            background: var(--light);
+        }
+        
+        .notification-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            color: var(--white);
+            font-size: 1.2rem;
+            border: 1px solid var(--light-gray);
+        }
+        
+        .notification-icon.deposit {
+            background: var(--success);
+        }
+        
+        .notification-icon.withdraw {
+            background: var(--warning);
+        }
+        
+        .notification-icon.trade {
+            background: var(--primary);
+        }
+        
+        .notification-content {
+            flex: 1;
+        }
+        
+        .notification-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: var(--dark);
+        }
+        
+        .notification-desc {
+            color: var(--gray);
+            font-size: 0.85rem;
+        }
+        
+        .notification-time {
+            color: var(--gray);
+            font-size: 0.8rem;
+        }
+        
+        /* P2P History Section */
+        .p2p-history-section {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 25px;
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+            border: 2px solid var(--light-gray);
+        }
+        
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .history-table th {
+            text-align: left;
+            padding: 12px 15px;
+            border-bottom: 2px solid var(--light-gray);
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 0.85rem;
+        }
+        
+        .history-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--light-gray);
+            font-size: 0.85rem;
+        }
+        
+        .history-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .history-table tr:hover {
+            background: var(--light);
+        }
+        
+        .transaction-type {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border: 1px solid var(--light-gray);
+        }
+        
+        .transaction-type.deposit {
+            background: rgba(74, 222, 128, 0.1);
+            color: var(--success);
+        }
+        
+        .transaction-type.withdraw {
+            background: rgba(251, 191, 36, 0.1);
+            color: var(--warning);
+        }
+        
+        .transaction-type.convert {
+            background: rgba(139, 118, 230, 0.1);
+            color: var(--primary);
+        }
+        
+        .transaction-type.buy {
+            background: rgba(74, 222, 128, 0.1);
+            color: var(--success);
+        }
+        
+        .transaction-type.sell {
+            background: rgba(251, 191, 36, 0.1);
+            color: var(--warning);
+        }
+        
+        /* Modal Styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 25px;
+            border-radius: var(--radius);
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            border: 2px solid var(--light-gray);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .modal-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            color: var(--gray);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+        }
+        
+        .btn-outline:hover {
+            background: var(--light);
+        }
+        
+        /* Trade Modal Styles */
+        .trade-modal {
+            max-width: 600px;
+        }
+        
+        .trade-form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .trade-summary {
+            background: var(--light);
+            border-radius: var(--radius);
+            padding: 15px;
+            margin: 15px 0;
+            border: 1px solid var(--light-gray);
+        }
+        
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        
+        .summary-row:last-child {
+            margin-bottom: 0;
+            font-weight: 600;
+            font-size: 1.1rem;
+            border-top: 1px solid var(--light-gray);
+            padding-top: 8px;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .main-stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .currency-balances {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .actions-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .exchange-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .history-table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .quick-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .p2p-listing {
+                grid-template-columns: 1fr;
+            }
+            
+            .listing-main {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            
+            .trader-info {
+                justify-content: center;
+            }
+            
+            .trade-meta {
+                justify-content: center;
+            }
+            
+            .profile-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .filter-section {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .create-trade-btn {
+                margin-left: 0;
+                width: 100%;
+            }
+            
+            .trade-form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .currency-balances {
+                grid-template-columns: 1fr;
+            }
+            
+            .quick-stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-menu {
+                display: none;
+            }
+            
+            .dashboard {
+                padding: 15px;
+            }
+            
+            .listing-actions {
+                flex-direction: row;
+            }
+            
+            .profile-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .profile-avatar {
+                margin-right: 0;
+                margin-bottom: 15px;
+            }
+            
+            .profile-stats {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                    <i class="fas fa-exchange-alt"></i>
+                    ACCQURA </div>
+            
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="#" class="nav-link active" onclick="showSection('dashboard')">
+                        <i class="fas fa-chart-line"></i> Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" onclick="showSection('p2pTrade')">
+                        <i class="fas fa-exchange-alt"></i> P2P Trade
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" onclick="showSection('p2pHistory')">
+                        <i class="fas fa-history"></i> P2P History
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" onclick="showSection('userProfile')">
+                        <i class="fas fa-user"></i> Profile
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" onclick="showSection('notifications')">
+                        <i class="fas fa-bell"></i> Notifications
+                        <span class="notification-badge">5</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="dashboard">
+        <!-- Dashboard Section -->
+        <div id="dashboard" class="section active">
+            <div class="dashboard-grid">
+                <!-- User Profile Section -->
+                <div class="user-profile">
+                    <div class="profile-circle">JD</div>
+                    <div class="profile-info">
+                        <h2>Welcome, John Doe!</h2>
+                        <p>Your Personal Dashboard</p>
+                    </div>
+                </div>
+            
+                <!-- Main Stats - Single Total Balance Section -->
+                <div class="main-stats">
+                    <div class="stat-card total-balance">
+                        <div class="currency-selector">
+                            <select id="balanceCurrency" onchange="updateBalanceCurrency()">
+                                <option value="USD">USD</option>
+                                <option value="MMK">MMK</option>
+                                <option value="THB">THB</option>
+                                <option value="JPY">JPY</option>
+                            </select>
+                        </div>
+                        <div class="stat-title">Total Balance</div>
+                        <div class="total-value" id="totalBalanceValue">$12,458.75</div>
+                    </div>
+                    
+                    <div class="stat-card successful-trades">
+                        <div class="stat-title">Successful Trades</div>
+                        <div class="stat-value">1,248</div>
+                    </div>
+                    
+                    <div class="stat-card pending">
+                        <div class="stat-title">Pending</div>
+                        <div class="stat-value">42</div>
+                    </div>
+                </div>
+                
+                <!-- Currency Balances Section -->
+                <div class="currency-balances">
+                    <div class="currency-card usd">
+                        <div class="currency-icon">
+                            <i class="fas fa-dollar-sign"></i>
+                        </div>
+                        <div class="currency-name">USD</div>
+                        <div class="currency-amount">$5,250.75</div>
+                    </div>
+                    
+                    <div class="currency-card mmk">
+                        <div class="currency-icon">
+                            <i class="fas fa-money-bill-wave"></i>
+                        </div>
+                        <div class="currency-name">MMK</div>
+                        <div class="currency-amount">8,245.30</div>
+                    </div>
+                    
+                    <div class="currency-card thb">
+                        <div class="currency-icon">
+                            <i class="fas fa-baht-sign"></i>
+                        </div>
+                        <div class="currency-name">THB</div>
+                        <div class="currency-amount">15,680.50</div>
+                    </div>
+                    
+                    <div class="currency-card jpy">
+                        <div class="currency-icon">
+                            <i class="fas fa-yen-sign"></i>
+                        </div>
+                        <div class="currency-name">JPY</div>
+                        <div class="currency-amount">¥325,420</div>
+                    </div>
+                </div>
+                
+                <div class="chart-section">
+                    <h2>Currency Distribution</h2>
+                    <div class="chart-container">
+                        <canvas id="currencyChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="performance-section">
+                    <h2>Performance Scores</h2>
+                    <div class="performance-list">
+                        <div class="performance-item">
+                            <div class="currency">
+                                <i class="fas fa-dollar-sign"></i> USD
+                            </div>
+                            <div class="percentage">100%</div>
+                        </div>
+                        <div class="performance-item">
+                            <div class="currency">
+                                <i class="fas fa-money-bill-wave"></i> MMK
+                            </div>
+                            <div class="percentage">100%</div>
+                        </div>
+                        <div class="performance-item">
+                            <div class="currency">
+                                <i class="fas fa-baht-sign"></i> THB
+                            </div>
+                            <div class="percentage">100%</div>
+                        </div>
+                        <div class="performance-item">
+                            <div class="currency">
+                                <i class="fas fa-yen-sign"></i> JPY
+                            </div>
+                            <div class="percentage">100%</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="actions-section">
+                    <div class="action-card deposit" onclick="showForm('deposit')">
+                        <i class="fas fa-plus-circle"></i>
+                        <h3>Deposit</h3>
+                        <p>Add funds to your account</p>
+                    </div>
+                    <div class="action-card withdraw" onclick="showForm('withdraw')">
+                        <i class="fas fa-minus-circle"></i>
+                        <h3>Withdraw</h3>
+                        <p>Transfer funds to your bank</p>
+                    </div>
+                    <div class="action-card convert" onclick="showForm('convert')">
+                        <i class="fas fa-exchange-alt"></i>
+                        <h3>Convert</h3>
+                        <p>Exchange between currencies</p>
+                    </div>
+                </div>
+                
+                <!-- Deposit Form -->
+                <div id="depositForm" class="action-form">
+                    <div class="form-header">
+                        <div class="form-title-section">
+                            <div class="form-icon">
+                                <i class="fas fa-plus-circle"></i>
+                            </div>
+                            <div class="form-title">Deposit Funds</div>
+                        </div>
+                        <button class="close-icon" onclick="hideForms()">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <form>
+                        <div class="form-group">
+                            <label class="form-label">Amount</label>
+                            <input type="number" class="form-control" placeholder="Enter amount" step="0.01" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Currency</label>
+                            <select class="form-control">
+                                <option value="">Select currency</option>
+                                <option value="USD">USD</option>
+                                <option value="MMK">MMK</option>
+                                <option value="THB">THB</option>
+                                <option value="JPY">JPY</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Payment Method</label>
+                            <select class="form-control">
+                                <option value="">Select payment method</option>
+                                <option value="bank">Bank Transfer</option>
+                                <option value="card">Credit/Debit Card</option>
+                                <option value="ewallet">E-Wallet</option>
+                            </select>
+                        </div>
+                        <button type="button" class="submit-btn">Deposit Funds</button>
+                    </form>
+                </div>
+                
+                <!-- Withdraw Form -->
+                <div id="withdrawForm" class="action-form">
+                    <div class="form-header">
+                        <div class="form-title-section">
+                            <div class="form-icon">
+                                <i class="fas fa-minus-circle"></i>
+                            </div>
+                            <div class="form-title">Withdraw Funds</div>
+                        </div>
+                        <button class="close-icon" onclick="hideForms()">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <form>
+                        <div class="form-group">
+                            <label class="form-label">Amount</label>
+                            <input type="number" class="form-control" placeholder="Enter amount" step="0.01" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Currency</label>
+                            <select class="form-control">
+                                <option value="">Select currency</option>
+                                <option value="USD">USD</option>
+                                <option value="MMK">MMK</option>
+                                <option value="THB">THB</option>
+                                <option value="JPY">JPY</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Bank Account</label>
+                            <select class="form-control">
+                                <option value="">Select bank account</option>
+                                <option value="bank1">KBZ Bank - ****1234</option>
+                                <option value="bank2">CB Bank - ****5678</option>
+                                <option value="bank3">AYA Bank - ****9012</option>
+                            </select>
+                        </div>
+                        <button type="button" class="submit-btn">Withdraw Funds</button>
+                    </form>
+                </div>
+                
+                <!-- Convert Form -->
+                <div id="convertForm" class="action-form">
+                    <div class="form-header">
+                        <div class="form-title-section">
+                            <div class="form-icon">
+                                <i class="fas fa-exchange-alt"></i>
+                            </div>
+                            <div class="form-title">Convert Currency</div>
+                        </div>
+                        <button class="close-icon" onclick="hideForms()">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <form>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">From Currency</label>
+                                <select class="form-control" id="fromCurrency">
+                                    <option value="">Select currency</option>
+                                    <option value="USD">USD</option>
+                                    <option value="MMK">MMK</option>
+                                    <option value="THB">THB</option>
+                                    <option value="JPY">JPY</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">To Currency</label>
+                                <select class="form-control" id="toCurrency">
+                                    <option value="">Select currency</option>
+                                    <option value="USD">USD</option>
+                                    <option value="MMK">MMK</option>
+                                    <option value="THB">THB</option>
+                                    <option value="JPY">JPY</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Amount</label>
+                            <input type="number" class="form-control" id="convertAmount" placeholder="Enter amount" step="0.01" min="0" oninput="calculateConversion()">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">You Will Receive</label>
+                            <div class="form-control" style="background-color: var(--light); font-weight: 600;">
+                                <span id="convertedAmount">0.00</span> 
+                                <span id="targetCurrency">---</span>
+                            </div>
+                            <small style="color: var(--gray); font-size: 0.8rem;" id="exchangeRateInfo">Exchange rate: --</small>
+                        </div>
+                        <button type="button" class="submit-btn">Convert Currency</button>
+                    </form>
+                </div>
+                
+                <div class="exchange-section">
+                    <div class="exchange-card">
+                        <h3>Exchange Rates</h3>
+                        <div class="divider"></div>
+                        <table class="exchange-rate-table">
+                            <thead>
+                                <tr>
+                                    <th>Currency Pair</th>
+                                    <th>Rate</th>
+                                    <th>Change</th>
+                                    <th>Last Updated</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>USD/MMK</td>
+                                    <td>2,100.50</td>
+                                    <td class="rate-change up"><i class="fas fa-caret-up"></i> 5.25 (0.25%)</td>
+                                    <td>Today, 10:30 AM</td>
+                                </tr>
+                                <tr>
+                                    <td>USD/THB</td>
+                                    <td>34.75</td>
+                                    <td class="rate-change down"><i class="fas fa-caret-down"></i> 0.15 (0.43%)</td>
+                                    <td>Today, 10:30 AM</td>
+                                </tr>
+                                <tr>
+                                    <td>USD/JPY</td>
+                                    <td>110.25</td>
+                                    <td class="rate-change up"><i class="fas fa-caret-up"></i> 0.75 (0.68%)</td>
+                                    <td>Today, 10:30 AM</td>
+                                </tr>
+                                <tr>
+                                    <td>THB/MMK</td>
+                                    <td>60.50</td>
+                                    <td class="rate-change up"><i class="fas fa-caret-up"></i> 0.25 (0.41%)</td>
+                                    <td>Today, 10:30 AM</td>
+                                </tr>
+                                <tr>
+                                    <td>JPY/MMK</td>
+                                    <td>19.05</td>
+                                    <td class="rate-change down"><i class="fas fa-caret-down"></i> 0.10 (0.52%)</td>
+                                    <td>Today, 10:30 AM</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="exchange-card">
+                        <h3>Recent Transactions</h3>
+                        <div class="divider"></div>
+                        <div class="performance-list">
+                            <div class="performance-item">
+                                <div class="currency">
+                                    <i class="fas fa-exchange-alt"></i> USD to MMK
+                                </div>
+                                <div class="percentage">$500 → 1,050,000 MMK</div>
+                            </div>
+                            <div class="performance-item">
+                                <div class="currency">
+                                    <i class="fas fa-exchange-alt"></i> THB to USD
+                                </div>
+                                <div class="percentage">15,000 THB → $428.57</div>
+                            </div>
+                            <div class="performance-item">
+                                <div class="currency">
+                                    <i class="fas fa-exchange-alt"></i> JPY to MMK
+                                </div>
+                                <div class="percentage">¥50,000 → 950,000 MMK</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- P2P Trade Section -->
+        <div id="p2pTrade" class="section">
+            <div class="p2p-trade-section">
+                <div class="form-header">
+                    <div class="form-title-section">
+                        <div class="form-icon">
+                            <i class="fas fa-exchange-alt"></i>
+                        </div>
+                        <div class="form-title">P2P Trade Listings</div>
+                    </div>
+                </div>
+                
+                <div class="p2p-tabs">
+                    <div class="p2p-tab active" onclick="showP2PTab('buy')">Buy</div>
+                    <div class="p2p-tab" onclick="showP2PTab('sell')">Sell</div>
+                    <div class="p2p-tab" onclick="showP2PTab('myTrades')">My Trades</div>
+                </div>
+                
+                <!-- Buy Section -->
+                <div id="buySection" class="p2p-content active">
+                    <!-- Quick Stats -->
+                    <div class="quick-stats">
+                        <div class="stat-card rate">
+                            <div class="stat-title">Best Rate</div>
+                            <div class="stat-value">1 USD = 4,150 MMK</div>
+                        </div>
+                        <div class="stat-card volume">
+                            <div class="stat-title">24h Volume</div>
+                            <div class="stat-value">$124,580</div>
+                        </div>
+                        <div class="stat-card trades">
+                            <div class="stat-title">Active Trades</div>
+                            <div class="stat-value">142</div>
+                        </div>
+                        <div class="stat-card users">
+                            <div class="stat-title">Active Traders</div>
+                            <div class="stat-value">89</div>
+                        </div>
+                    </div>
+                    
+                    <div class="filter-section">
+                        <div class="filter-label">Filter:</div>
+                        <select class="filter-select">
+                            <option>All Currencies</option>
+                            <option>USD</option>
+                            <option>MMK</option>
+                            <option>THB</option>
+                            <option>JPY</option>
+                        </select>
+                        <select class="filter-select">
+                            <option>Any Payment Method</option>
+                            <option>Bank Transfer</option>
+                            <option>Mobile Banking</option>
+                            <option>E-Wallet</option>
+                        </select>
+                        <button class="create-trade-btn" onclick="showCreateTradeModal('buy')">Create New Trade</button>
+                    </div>
+                    
+                    <div class="p2p-listings">
+                        <!-- Listing 1 -->
+                        <div class="p2p-listing">
+                            <div class="listing-main">
+                                <div class="trader-avatar">AM</div>
+                                <div class="listing-details">
+                                    <div class="trader-info">
+                                        <div class="trader-name">Aung Myint Thu</div>
+                                        <div class="trader-rating">
+                                            <i class="fas fa-star"></i>
+                                            <span>4.9 (128)</span>
+                                        </div>
+                                    </div>
+                                    <div class="trade-amount">Buy 7.50 USD</div>
+                                    <div class="trade-description">for 30,000 MMK</div>
+                                    
+                                </div>
+                                <div class="listing-rate">
+                                    <div class="rate-value">1 USD = 4,000 MMK</div>
+                                    <div class="rate-label">Exchange Rate</div>
+                                </div>
+                            </div>
+                            <div class="listing-actions">
+                                <button class="action-btn buy-all-btn" onclick="showTradeModal('buy', 'all', 'Aung Myint Thu', 7.5, 30000, 'USD', 'MMK', 4000)">Buy All</button>
+                                <button class="action-btn buy-partial-btn" onclick="showTradeModal('buy', 'partial', 'Aung Myint Thu', 7.5, 30000, 'USD', 'MMK', 4000)">Buy Partial</button>
+                            </div>
+                        </div>
+                        
+                        <!-- Listing 2 -->
+                        <div class="p2p-listing">
+                            <div class="listing-main">
+                                <div class="trader-avatar">AY</div>
+                                <div class="listing-details">
+                                    <div class="trader-info">
+                                        <div class="trader-name">Aye</div>
+                                        <div class="trader-rating">
+                                            <i class="fas fa-star"></i>
+                                            <span>4.8 (96)</span>
+                                        </div>
+                                    </div>
+                                    <div class="trade-amount">Buy 24,600 MMK</div>
+                                    <div class="trade-description">for 6 USD</div>
+                                    
+                                </div>
+                                <div class="listing-rate">
+                                    <div class="rate-value">1 USD = 4,100 MMK</div>
+                                    <div class="rate-label">Exchange Rate</div>
+                                </div>
+                            </div>
+                            <div class="listing-actions">
+                                <button class="action-btn buy-all-btn" onclick="showTradeModal('buy', 'all', 'Aye', 6, 24600, 'USD', 'MMK', 4100)">Buy All</button>
+                                <button class="action-btn buy-partial-btn" onclick="showTradeModal('buy', 'partial', 'Aye', 6, 24600, 'USD', 'MMK', 4100)">Buy Partial</button>
+                            </div>
+                            <div class="listing-progress">
+                                <div class="progress-info">
+                                    <span>Only 22,600 MMK remaining</span>
+                                    <span>~ 5.51 USD</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 85%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Sell Section -->
+                <div id="sellSection" class="p2p-content">
+                    <div class="filter-section">
+                        <div class="filter-label">Filter:</div>
+                        <select class="filter-select">
+                            <option>All Currencies</option>
+                            <option>USD</option>
+                            <option>MMK</option>
+                            <option>THB</option>
+                            <option>JPY</option>
+                        </select>
+                        <select class="filter-select">
+                            <option>Any Payment Method</option>
+                            <option>Bank Transfer</option>
+                            <option>Mobile Banking</option>
+                            <option>E-Wallet</option>
+                        </select>
+                        <button class="create-trade-btn" onclick="showCreateTradeModal('sell')">Create New Sell Offer</button>
+                    </div>
+                    
+                    <div class="p2p-listings">
+                        <!-- Listing 1 -->
+                        <div class="p2p-listing">
+                            <div class="listing-main">
+                                <div class="trader-avatar">MT</div>
+                                <div class="listing-details">
+                                    <div class="trader-info">
+                                        <div class="trader-name">Min Thu</div>
+                                        <div class="trader-rating">
+                                            <i class="fas fa-star"></i>
+                                            <span>4.7 (204)</span>
+                                        </div>
+                                    </div>
+                                    <div class="trade-amount">Sell 5.13 USD</div>
+                                    <div class="trade-description">for 20,000 MMK</div>
+                                    
+                                </div>
+                                <div class="listing-rate">
+                                    <div class="rate-value">1 USD = 3,900 MMK</div>
+                                    <div class="rate-label">Exchange Rate</div>
+                                </div>
+                            </div>
+                            <div class="listing-actions">
+                                <button class="action-btn buy-all-btn" onclick="showTradeModal('sell', 'all', 'Min Thu', 5.13, 20000, 'USD', 'MMK', 3900)">Sell All</button>
+                                <button class="action-btn buy-partial-btn" onclick="showTradeModal('sell', 'partial', 'Min Thu', 5.13, 20000, 'USD', 'MMK', 3900)">Sell Partial</button>
+                            </div>
+                            <div class="listing-progress">
+                                <div class="progress-info">
+                                    <span>Only 4.13 USD remaining</span>
+                                    <span>~ 16,107 MMK</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 70%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Listing 2 -->
+                        <div class="p2p-listing">
+                            <div class="listing-main">
+                                <div class="trader-avatar">KK</div>
+                                <div class="listing-details">
+                                    <div class="trader-info">
+                                        <div class="trader-name">Kyaw Kyaw</div>
+                                        <div class="trader-rating">
+                                            <i class="fas fa-star"></i>
+                                            <span>4.9 (87)</span>
+                                        </div>
+                                    </div>
+                                    <div class="trade-amount">Sell 10,000 THB</div>
+                                    <div class="trade-description">for 600,000 MMK</div>
+                                    
+                                </div>
+                                <div class="listing-rate">
+                                    <div class="rate-value">1 THB = 60 MMK</div>
+                                    <div class="rate-label">Exchange Rate</div>
+                                </div>
+                            </div>
+                            <div class="listing-actions">
+                                <button class="action-btn buy-all-btn" onclick="showTradeModal('sell', 'all', 'Kyaw Kyaw', 10000, 600000, 'THB', 'MMK', 60)">Sell All</button>
+                                <button class="action-btn buy-partial-btn" onclick="showTradeModal('sell', 'partial', 'Kyaw Kyaw', 10000, 600000, 'THB', 'MMK', 60)">Sell Partial</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- My Trades Section -->
+                <div id="myTradesSection" class="p2p-content">
+                    <div class="my-trades-list">
+                        <!-- Trade 1 -->
+                        <div class="trade-item">
+                            <div class="trade-header">
+                                <div class="trade-type buy">Buy</div>
+                                <div class="trade-date">2024-01-15</div>
+                            </div>
+                            <div class="trade-details">
+                                <div>
+                                    <div class="trade-amount">$500.00</div>
+                                    <div class="trade-currency">USD</div>
+                                </div>
+                                <div class="trade-rate">
+                                    Rate: 1 USD = 2,100 MMK
+                                </div>
+                            </div>
+                            <div class="trade-status">
+                                <div>From: User123</div>
+                                <div class="status-badge status-completed">Completed</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Trade 2 -->
+                        <div class="trade-item">
+                            <div class="trade-header">
+                                <div class="trade-type sell">Sell</div>
+                                <div class="trade-date">2024-01-14</div>
+                            </div>
+                            <div class="trade-details">
+                                <div>
+                                    <div class="trade-amount">MMK 420,000</div>
+                                    <div class="trade-currency">Myanmar Kyat</div>
+                                </div>
+                                <div class="trade-rate">
+                                    Rate: 1 USD = 2,100 MMK
+                                </div>
+                            </div>
+                            <div class="trade-status">
+                                <div>To: User456</div>
+                                <div class="status-badge status-completed">Completed</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Trade 3 -->
+                        <div class="trade-item">
+                            <div class="trade-header">
+                                <div class="trade-type buy">Buy</div>
+                                <div class="trade-date">2024-01-13</div>
+                            </div>
+                            <div class="trade-details">
+                                <div>
+                                    <div class="trade-amount">THB 5,000</div>
+                                    <div class="trade-currency">Thai Baht</div>
+                                </div>
+                                <div class="trade-rate">
+                                    Rate: 1 THB = 60 MMK
+                                </div>
+                            </div>
+                            <div class="trade-status">
+                                <div>From: User789</div>
+                                <div class="status-badge status-pending">Pending</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="exchange-section">
+                <div class="exchange-card">
+                    <h3>Active P2P Offers</h3>
+                    <div class="divider"></div>
+                    <p><strong>USD/MMK:</strong> 15 active offers</p>
+                    <p><strong>THB/MMK:</strong> 8 active offers</p>
+                    <p><strong>JPY/MMK:</strong> 3 active offers</p>
+                    <p><strong>USD/THB:</strong> 5 active offers</p>
+                </div>
+                <div class="exchange-card">
+                    <h3>P2P Market Stats</h3>
+                    <div class="divider"></div>
+                    <p><strong>Total Trades:</strong> 1,248</p>
+                    <p><strong>Success Rate:</strong> 98.7%</p>
+                    <p><strong>Avg. Completion:</strong> 15 min</p>
+                    <p><strong>Dispute Rate:</strong> 0.3%</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- User Profile Section -->
+        <div id="userProfile" class="section">
+            <div class="user-profile-section">
+                <div class="profile-header">
+                    <div class="profile-avatar">
+                        <div id="avatarInitials">JD</div>
+                        <div class="avatar-upload" onclick="document.getElementById('avatarInput').click()">
+                            <i class="fas fa-camera"></i>
+                        </div>
+                        <input type="file" id="avatarInput" accept="image/*" style="display: none;" onchange="handleAvatarUpload(event)">
+                    </div>
+                    <div class="profile-info">
+                        <h2 id="userName">John Doe</h2>
+                        <p>Member since January 2023</p>
+                        <div class="profile-stats">
+                            <div class="stat-item">
+                                <div class="stat-value">1,248</div>
+                                <div class="stat-label">Trades</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">98.7%</div>
+                                <div class="stat-label">Success Rate</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">4.9</div>
+                                <div class="stat-label">Rating</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="profile-content">
+                    <!-- Personal Information -->
+                    <div class="profile-card">
+                        <div class="card-header">
+                            <div class="card-icon">
+                                <i class="fas fa-user-edit"></i>
+                            </div>
+                            <div class="card-title">Personal Information</div>
+                        </div>
+                        
+                        <form id="personalInfoForm">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label">First Name</label>
+                                    <input type="text" class="form-control" id="firstName" value="John">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Last Name</label>
+                                    <input type="text" class="form-control" id="lastName" value="Doe">
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Email Address</label>
+                                <input type="email" class="form-control" id="email" value="john.doe@example.com">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Phone Number</label>
+                                <input type="tel" class="form-control" id="phone" value="+1 (555) 123-4567">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Date of Birth</label>
+                                <input type="date" class="form-control" id="dob" value="1990-05-15">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Country</label>
+                                <select class="form-control" id="country">
+                                    <option value="US">United States</option>
+                                    <option value="MM">Myanmar</option>
+                                    <option value="TH">Thailand</option>
+                                    <option value="JP">Japan</option>
+                                    <option value="UK">United Kingdom</option>
+                                </select>
+                            </div>
+                            
+                            <button type="button" class="submit-btn" onclick="updatePersonalInfo()">Save Changes</button>
+                        </form>
+                    </div>
+                    
+                    <!-- Account Security -->
+                    <div class="profile-card">
+                        <div class="card-header">
+                            <div class="card-icon">
+                                <i class="fas fa-shield-alt"></i>
+                            </div>
+                            <div class="card-title">Account Security</div>
+                        </div>
+                        
+                        <div class="verification-status">
+                            <div class="verification-icon">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <div class="verification-details">
+                                <h4>Identity Verified</h4>
+                                <p>Your identity has been successfully verified</p>
+                            </div>
+                        </div>
+                        
+                        <div class="security-item">
+                            <div class="security-info">
+                                <h4>Two-Factor Authentication</h4>
+                                <p>Add an extra layer of security to your account</p>
+                            </div>
+                            <div class="security-status status-inactive">Inactive</div>
+                        </div>
+                        
+                        <div class="security-item">
+                            <div class="security-info">
+                                <h4>Login Activity</h4>
+                                <p>Last login: Today, 10:30 AM from Chrome on Windows</p>
+                            </div>
+                            <div class="security-status status-active">Active</div>
+                        </div>
+                        
+                        <div class="security-item">
+                            <div class="security-info">
+                                <h4>Connected Devices</h4>
+                                <p>2 devices currently connected</p>
+                            </div>
+                            <div class="security-status status-active">Active</div>
+                        </div>
+                        
+                        <button type="button" class="submit-btn btn-outline" onclick="showPasswordForm()">Change Password</button>
+                    </div>
+                    
+                    <!-- Payment Methods -->
+                    <div class="profile-card">
+                        <div class="card-header">
+                            <div class="card-icon">
+                                <i class="fas fa-credit-card"></i>
+                            </div>
+                            <div class="card-title">Payment Methods</div>
+                        </div>
+                        
+                        <div class="payment-methods">
+                            <div class="payment-method">
+                                <div class="payment-icon">
+                                    <i class="fas fa-university"></i>
+                                </div>
+                                <div class="payment-details">
+                                    <h4>KBZ Bank</h4>
+                                    <p>**** 3258 • Primary</p>
+                                </div>
+                                <div class="payment-action">Edit</div>
+                            </div>
+                            
+                            <div class="payment-method">
+                                <div class="payment-icon">
+                                    <i class="fas fa-mobile-alt"></i>
+                                </div>
+                                <div class="payment-details">
+                                    <h4>Wave Money</h4>
+                                    <p>09*****9159</p>
+                                </div>
+                                <div class="payment-action">Edit</div>
+                            </div>
+
+                            <div class="payment-method">
+                                <div class="payment-icon">
+                                    <i class="fas fa-mobile-alt"></i>
+                                </div>
+                                <div class="payment-details">
+                                    <h4>KBZ Pay</h4>
+                                    <p>09*****9159</p>
+                                </div>
+                                <div class="payment-action">Edit</div>
+                            </div>
+                            
+                            <div class="payment-method">
+                                <div class="payment-icon">
+                                    <i class="fas fa-wallet"></i>
+                                </div>
+                                <div class="payment-details">
+                                    <h4>Add New Method</h4>
+                                    <p>Connect a bank account or e-wallet</p>
+                                </div>
+                                <div class="payment-action">Add</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Preferences -->
+                    <div class="profile-card">
+                        <div class="card-header">
+                            <div class="card-icon">
+                                <i class="fas fa-cog"></i>
+                            </div>
+                            <div class="card-title">Preferences</div>
+                        </div>
+                        
+                        <div class="preference-item">
+                            <div class="preference-info">
+                                <h4>Email Notifications</h4>
+                                <p>Receive email updates about your account activity</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        
+                        <div class="preference-item">
+                            <div class="preference-info">
+                                <h4>Trade Alerts</h4>
+                                <p>Get notified when exchange rates reach your target</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                  
+                        <button type="button" class="submit-btn" onclick="savePreferences()">Save Preferences</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- P2P History Section -->
+        <div id="p2pHistory" class="section">
+            <div class="p2p-history-section">
+                <div class="form-header">
+                    <div class="form-title-section">
+                        <div class="form-icon">
+                            <i class="fas fa-history"></i>
+                        </div>
+                        <div class="form-title">P2P Transaction History</div>
+                    </div>
+                </div>
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Type</th>
+                            <th>Amount</th>
+                            <th>Exchange Rate</th>
+                            <th>From/To</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>2024-01-15</td>
+                            <td><span class="transaction-type buy">Buy</span></td>
+                            <td>$500.00</td>
+                            <td>1 USD = 2100 MMK</td>
+                            <td>From: User123</td>
+                            <td>Completed</td>
+                        </tr>
+                        <tr>
+                            <td>2024-01-14</td>
+                            <td><span class="transaction-type sell">Sell</span></td>
+                            <td>MMK 420,000</td>
+                            <td>1 USD = 2100 MMK</td>
+                            <td>To: User456</td>
+                            <td>Completed</td>
+                        </tr>
+                        <tr>
+                            <td>2024-01-13</td>
+                            <td><span class="transaction-type buy">Buy</span></td>
+                            <td>THB 5,000</td>
+                            <td>1 THB = 60 MMK</td>
+                            <td>From: User789</td>
+                            <td>Completed</td>
+                        </tr>
+                        <tr>
+                            <td>2024-01-12</td>
+                            <td><span class="transaction-type sell">Sell</span></td>
+                            <td>¥50,000</td>
+                            <td>1 JPY = 19.2 MMK</td>
+                            <td>To: User101</td>
+                            <td>Completed</td>
+                        </tr>
+                        <tr>
+                            <td>2024-01-10</td>
+                            <td><span class="transaction-type buy">Buy</span></td>
+                            <td>$300.00</td>
+                            <td>1 USD = 2095 MMK</td>
+                            <td>From: User112</td>
+                            <td>Completed</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Notifications Section -->
+        <div id="notifications" class="section">
+            <div class="notifications-section">
+                <div class="form-header">
+                    <div class="form-title-section">
+                        <div class="form-icon">
+                            <i class="fas fa-bell"></i>
+                        </div>
+                        <div class="form-title">Notifications</div>
+                    </div>
+                </div>
+                <div class="notification-list">
+                    <div class="notification-item">
+                        <div class="notification-icon deposit">
+                            <i class="fas fa-plus-circle"></i>
+                        </div>
+                        <div class="notification-content">
+                            <div class="notification-title">Deposit Successful</div>
+                            <div class="notification-desc">Your deposit of $500.00 has been processed successfully</div>
+                        </div>
+                        <div class="notification-time">2 hours ago</div>
+                    </div>
+                    <div class="notification-item">
+                        <div class="notification-icon withdraw">
+                            <i class="fas fa-minus-circle"></i>
+                        </div>
+                        <div class="notification-content">
+                            <div class="notification-title">Withdrawal Processed</div>
+                            <div class="notification-desc">Your withdrawal of MMK 150,000 is being transferred to your bank account</div>
+                        </div>
+                        <div class="notification-time">1 day ago</div>
+                    </div>
+                    
+                    <div class="notification-item">
+                        <div class="notification-icon withdraw">
+                            <i class="fas fa-minus-circle"></i>
+                        </div>
+                        <div class="notification-content">
+                            <div class="notification-title">Currency Rate Alert</div>
+                            <div class="notification-desc">USD/MMK rate has reached 2100. Consider converting your currency</div>
+                        </div>
+                        <div class="notification-time">5 days ago</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Password Change Modal -->
+    <div id="passwordModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Change Password</h3>
+                <button class="modal-close" onclick="closePasswordForm()">&times;</button>
+            </div>
+            
+            <form id="passwordForm">
+                <div class="form-group">
+                    <label class="form-label">Current Password</label>
+                    <input type="password" class="form-control" id="currentPassword" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">New Password</label>
+                    <input type="password" class="form-control" id="newPassword" required>
+                    <small style="color: var(--gray); font-size: 0.8rem;">Password must be at least 8 characters with uppercase, lowercase, and numbers</small>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Confirm New Password</label>
+                    <input type="password" class="form-control" id="confirmPassword" required>
+                </div>
+                
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button type="button" class="submit-btn btn-outline" onclick="closePasswordForm()" style="flex: 1;">Cancel</button>
+                    <button type="button" class="submit-btn" onclick="changePassword()" style="flex: 1;">Change Password</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Create Trade Modal -->
+    <div id="createTradeModal" class="modal-overlay">
+        <div class="modal-content trade-modal">
+            <div class="modal-header">
+                <h3 class="modal-title" id="createTradeModalTitle">Create New Trade</h3>
+                <button class="modal-close" onclick="closeCreateTradeModal()">&times;</button>
+            </div>
+            
+            <form id="createTradeForm">
+                <div class="form-group">
+                    <label class="form-label">Trade Type</label>
+                    <select class="form-control" id="tradeType">
+                        <option value="buy">Buy</option>
+                        <option value="sell">Sell</option>
+                    </select>
+                </div>
+                
+                <div class="trade-form-row">
+                    <div class="form-group">
+                        <label class="form-label">Currency You Have</label>
+                        <select class="form-control" id="fromCurrencyTrade">
+                            <option value="USD">USD</option>
+                            <option value="MMK">MMK</option>
+                            <option value="THB">THB</option>
+                            <option value="JPY">JPY</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Currency You Want</label>
+                        <select class="form-control" id="toCurrencyTrade">
+                            <option value="MMK">MMK</option>
+                            <option value="USD">USD</option>
+                            <option value="THB">THB</option>
+                            <option value="JPY">JPY</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Amount</label>
+                    <input type="number" class="form-control" id="tradeAmount" placeholder="Enter amount" step="0.01" min="0" oninput="calculateTradeRate()">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Exchange Rate</label>
+                    <input type="number" class="form-control" id="tradeRate" placeholder="Enter exchange rate" step="0.01" min="0" oninput="calculateTradeTotal()">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Payment Method</label>
+                    <select class="form-control" id="paymentMethod">
+                        <option value="bank">Bank Transfer</option>
+                        <option value="mobile">Mobile Banking</option>
+                        <option value="ewallet">E-Wallet</option>
+                    </select>
+                </div>
+                
+                <div class="trade-summary">
+                    <div class="summary-row">
+                        <span>You will receive:</span>
+                        <span id="tradeTotal">0.00</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Platform fee (0.5%):</span>
+                        <span id="tradeFee">0.00</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Total:</span>
+                        <span id="tradeNetAmount">0.00</span>
+                    </div>
+                </div>
+                
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button type="button" class="submit-btn btn-outline" onclick="closeCreateTradeModal()" style="flex: 1;">Cancel</button>
+                    <button type="button" class="submit-btn" onclick="createTrade()" style="flex: 1;">Create Trade</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Trade Confirmation Modal -->
+    <div id="tradeModal" class="modal-overlay">
+        <div class="modal-content trade-modal">
+            <div class="modal-header">
+                <h3 class="modal-title" id="tradeModalTitle">Confirm Trade</h3>
+                <button class="modal-close" onclick="closeTradeModal()">&times;</button>
+            </div>
+            
+            <div class="form-group">
+                <p>You are about to <span id="tradeAction">buy</span> from <strong id="traderName">Trader Name</strong></p>
+            </div>
+            
+            <div class="trade-summary">
+                <div class="summary-row">
+                    <span>Amount:</span>
+                    <span id="tradeAmountDisplay">0.00</span>
+                </div>
+                <div class="summary-row">
+                    <span>Exchange Rate:</span>
+                    <span id="tradeRateDisplay">0.00</span>
+                </div>
+                <div class="summary-row">
+                    <span>You will receive:</span>
+                    <span id="tradeTotalDisplay">0.00</span>
+                </div>
+                <div class="summary-row">
+                    <span>Platform fee (0.5%):</span>
+                    <span id="tradeFeeDisplay">0.00</span>
+                </div>
+                <div class="summary-row">
+                    <span>Total:</span>
+                    <span id="tradeNetAmountDisplay">0.00</span>
+                </div>
+            </div>
+            
+            <div class="form-group" id="partialAmountGroup" style="display: none;">
+                <label class="form-label">Enter Amount to Trade</label>
+                <input type="number" class="form-control" id="partialAmount" placeholder="Enter amount" step="0.01" min="0" oninput="calculatePartialTrade()">
+            </div>
+            
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button type="button" class="submit-btn btn-outline" onclick="closeTradeModal()" style="flex: 1;">Cancel</button>
+                <button type="button" class="submit-btn" onclick="confirmTrade()" style="flex: 1;">Confirm Trade</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ========== SECTION MANAGEMENT FUNCTIONS ==========
+        
+        // Show section function
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Remove active class from all nav links
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            // Show the selected section
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Add active class to the clicked nav link
+            event.target.classList.add('active');
+            
+            // Hide any open forms
+            hideForms();
+        }
+
+        // Show P2P tab function
+        function showP2PTab(tabId) {
+            // Remove active class from all tabs
+            document.querySelectorAll('.p2p-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+            
+            // Hide all P2P content sections
+            document.querySelectorAll('.p2p-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Show the selected content section
+            document.getElementById(tabId + 'Section').classList.add('active');
+        }
+
+        // ========== FORM MANAGEMENT FUNCTIONS ==========
+        
+        // Show form function
+        function showForm(formType) {
+            // Hide all forms first
+            hideForms();
+            
+            // Show the selected form
+            document.getElementById(formType + 'Form').style.display = 'block';
+            
+            // Scroll to the form
+            document.getElementById(formType + 'Form').scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'start' 
+            });
+        }
+
+        // Hide all forms
+        function hideForms() {
+            document.getElementById('depositForm').style.display = 'none';
+            document.getElementById('withdrawForm').style.display = 'none';
+            document.getElementById('convertForm').style.display = 'none';
+        }
+
+        // ========== CURRENCY CONVERSION FUNCTIONS ==========
+        
+        // Exchange rates data
+        const exchangeRates = [
+            { from: 'USD', to: 'MMK', rate: 2100 },
+            { from: 'USD', to: 'THB', rate: 35 },
+            { from: 'USD', to: 'JPY', rate: 110 },
+            { from: 'MMK', to: 'USD', rate: 0.00048 },
+            { from: 'MMK', to: 'THB', rate: 0.017 },
+            { from: 'MMK', to: 'JPY', rate: 0.052 },
+            { from: 'THB', to: 'USD', rate: 0.029 },
+            { from: 'THB', to: 'MMK', rate: 60 },
+            { from: 'THB', to: 'JPY', rate: 3.14 },
+            { from: 'JPY', to: 'USD', rate: 0.0091 },
+            { from: 'JPY', to: 'MMK', rate: 19.2 },
+            { from: 'JPY', to: 'THB', rate: 0.32 }
+        ];
+
+        // Balance conversion rates
+        const balanceRates = {
+            'USD': { value: 12458.75, symbol: '$' },
+            'MMK': { value: 26163237.5, symbol: '' },
+            'THB': { value: 436056.25, symbol: '' },
+            'JPY': { value: 1370462.5, symbol: '¥' }
+        };
+
+        // Calculate conversion
+        function calculateConversion() {
+            const fromCurrency = document.getElementById('fromCurrency').value;
+            const toCurrency = document.getElementById('toCurrency').value;
+            const amount = parseFloat(document.getElementById('convertAmount').value) || 0;
+            
+            if (!fromCurrency || !toCurrency || amount <= 0) {
+                document.getElementById('convertedAmount').textContent = '0.00';
+                document.getElementById('targetCurrency').textContent = '---';
+                document.getElementById('exchangeRateInfo').textContent = 'Exchange rate: --';
+                return;
+            }
+            
+            // Find exchange rate
+            const rate = exchangeRates.find(r => 
+                r.from === fromCurrency && r.to === toCurrency
+            );
+            
+            if (rate) {
+                const converted = amount * parseFloat(rate.rate);
+                document.getElementById('convertedAmount').textContent = converted.toFixed(2);
+                document.getElementById('targetCurrency').textContent = toCurrency;
+                document.getElementById('exchangeRateInfo').textContent = 
+                    `Exchange rate: 1 ${fromCurrency} = ${parseFloat(rate.rate).toFixed(4)} ${toCurrency}`;
+            } else {
+                document.getElementById('convertedAmount').textContent = '---';
+                document.getElementById('targetCurrency').textContent = '---';
+                document.getElementById('exchangeRateInfo').textContent = 'Exchange rate not available';
+            }
+        }
+
+        // Update balance currency
+        function updateBalanceCurrency() {
+            const currencySelect = document.getElementById('balanceCurrency');
+            const selectedCurrency = currencySelect.value;
+            const balanceData = balanceRates[selectedCurrency];
+            
+            document.getElementById('totalBalanceValue').textContent = 
+                `${balanceData.symbol}${balanceData.value.toLocaleString()}`;
+        }
+
+        // ========== PROFILE MANAGEMENT FUNCTIONS ==========
+        
+        // Handle avatar upload
+        function handleAvatarUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const avatar = document.querySelector('.profile-avatar');
+                    avatar.innerHTML = `<img src="${e.target.result}" alt="Profile Photo">`;
+                    avatar.innerHTML += `<div class="avatar-upload" onclick="document.getElementById('avatarInput').click()">
+                                            <i class="fas fa-camera"></i>
+                                        </div>`;
+                    avatar.innerHTML += `<input type="file" id="avatarInput" accept="image/*" style="display: none;" onchange="handleAvatarUpload(event)">`;
+                    
+                    // Show success message
+                    alert('Profile photo updated successfully!');
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Update personal information
+        function updatePersonalInfo() {
+            const firstName = document.getElementById('firstName').value;
+            const lastName = document.getElementById('lastName').value;
+            
+            // Update the displayed name
+            document.getElementById('userName').textContent = `${firstName} ${lastName}`;
+            document.getElementById('avatarInitials').textContent = `${firstName.charAt(0)}${lastName.charAt(0)}`;
+            
+            // Update the dashboard profile
+            document.querySelector('.profile-circle').textContent = `${firstName.charAt(0)}${lastName.charAt(0)}`;
+            document.querySelector('.profile-info h2').textContent = `Welcome, ${firstName} ${lastName}!`;
+            
+            // Show success message
+            alert('Personal information updated successfully!');
+        }
+
+        // Show password change form
+        function showPasswordForm() {
+            document.getElementById('passwordModal').style.display = 'flex';
+        }
+
+        // Close password change form
+        function closePasswordForm() {
+            document.getElementById('passwordModal').style.display = 'none';
+            document.getElementById('passwordForm').reset();
+        }
+
+        // Change password
+        function changePassword() {
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            // Basic validation
+            if (!currentPassword || !newPassword || !confirmPassword) {
+                alert('Please fill in all fields');
+                return;
+            }
+            
+            if (newPassword !== confirmPassword) {
+                alert('New passwords do not match');
+                return;
+            }
+            
+            if (newPassword.length < 8) {
+                alert('Password must be at least 8 characters long');
+                return;
+            }
+            
+            // In a real application, you would send this to the server
+            // For demo purposes, we'll just show a success message
+            alert('Password changed successfully!');
+            closePasswordForm();
+        }
+
+        // Save preferences
+        function savePreferences() {
+            alert('Preferences saved successfully!');
+        }
+
+        // ========== TRADE MANAGEMENT FUNCTIONS ==========
+        
+        // Current trade details
+        let currentTrade = {
+            type: 'buy',
+            action: 'all',
+            trader: '',
+            amount: 0,
+            total: 0,
+            fromCurrency: '',
+            toCurrency: '',
+            rate: 0
+        };
+
+        // Show create trade modal
+        function showCreateTradeModal(type) {
+            document.getElementById('createTradeModal').style.display = 'flex';
+            document.getElementById('tradeType').value = type;
+            document.getElementById('createTradeModalTitle').textContent = `Create New ${type.charAt(0).toUpperCase() + type.slice(1)} Trade`;
+            
+            // Set default currencies based on trade type
+            if (type === 'buy') {
+                document.getElementById('fromCurrencyTrade').value = 'MMK';
+                document.getElementById('toCurrencyTrade').value = 'USD';
+            } else {
+                document.getElementById('fromCurrencyTrade').value = 'USD';
+                document.getElementById('toCurrencyTrade').value = 'MMK';
+            }
+            
+            // Calculate initial trade values
+            calculateTradeRate();
+        }
+
+        // Close create trade modal
+        function closeCreateTradeModal() {
+            document.getElementById('createTradeModal').style.display = 'none';
+            document.getElementById('createTradeForm').reset();
+        }
+
+        // Calculate trade rate
+        function calculateTradeRate() {
+            const fromCurrency = document.getElementById('fromCurrencyTrade').value;
+            const toCurrency = document.getElementById('toCurrencyTrade').value;
+            const amount = parseFloat(document.getElementById('tradeAmount').value) || 0;
+            const rate = parseFloat(document.getElementById('tradeRate').value) || 0;
+            
+            // If rate is provided, calculate total
+            if (rate > 0) {
+                const total = amount * rate;
+                const fee = total * 0.005; // 0.5% platform fee
+                const netAmount = total - fee;
+                
+                document.getElementById('tradeTotal').textContent = total.toFixed(2);
+                document.getElementById('tradeFee').textContent = fee.toFixed(2);
+                document.getElementById('tradeNetAmount').textContent = netAmount.toFixed(2);
+            }
+        }
+
+        // Calculate trade total
+        function calculateTradeTotal() {
+            calculateTradeRate();
+        }
+
+        // Create trade
+        function createTrade() {
+            const tradeType = document.getElementById('tradeType').value;
+            const fromCurrency = document.getElementById('fromCurrencyTrade').value;
+            const toCurrency = document.getElementById('toCurrencyTrade').value;
+            const amount = parseFloat(document.getElementById('tradeAmount').value) || 0;
+            const rate = parseFloat(document.getElementById('tradeRate').value) || 0;
+            
+            if (amount <= 0 || rate <= 0) {
+                alert('Please enter valid amount and exchange rate');
+                return;
+            }
+            
+            // In a real application, you would send this to the server
+            // For demo purposes, we'll just show a success message
+            alert(`${tradeType.charAt(0).toUpperCase() + tradeType.slice(1)} trade created successfully!`);
+            closeCreateTradeModal();
+        }
+
+        // Show trade modal
+        function showTradeModal(type, action, trader, amount, total, fromCurrency, toCurrency, rate) {
+            currentTrade = {
+                type: type,
+                action: action,
+                trader: trader,
+                amount: amount,
+                total: total,
+                fromCurrency: fromCurrency,
+                toCurrency: toCurrency,
+                rate: rate
+            };
+            
+            document.getElementById('tradeModal').style.display = 'flex';
+            document.getElementById('tradeAction').textContent = type;
+            document.getElementById('traderName').textContent = trader;
+            document.getElementById('tradeAmountDisplay').textContent = `${amount} ${fromCurrency}`;
+            document.getElementById('tradeRateDisplay').textContent = `1 ${fromCurrency} = ${rate} ${toCurrency}`;
+            
+            // Show/hide partial amount input
+            if (action === 'partial') {
+                document.getElementById('partialAmountGroup').style.display = 'block';
+                document.getElementById('partialAmount').value = '';
+                document.getElementById('tradeTotalDisplay').textContent = '0.00';
+                document.getElementById('tradeFeeDisplay').textContent = '0.00';
+                document.getElementById('tradeNetAmountDisplay').textContent = '0.00';
+            } else {
+                document.getElementById('partialAmountGroup').style.display = 'none';
+                calculateTradeDetails(amount);
+            }
+        }
+
+        // Close trade modal
+        function closeTradeModal() {
+            document.getElementById('tradeModal').style.display = 'none';
+        }
+
+        // Calculate partial trade
+        function calculatePartialTrade() {
+            const partialAmount = parseFloat(document.getElementById('partialAmount').value) || 0;
+            if (partialAmount > 0 && partialAmount <= currentTrade.amount) {
+                calculateTradeDetails(partialAmount);
+            } else {
+                document.getElementById('tradeTotalDisplay').textContent = '0.00';
+                document.getElementById('tradeFeeDisplay').textContent = '0.00';
+                document.getElementById('tradeNetAmountDisplay').textContent = '0.00';
+            }
+        }
+
+        // Calculate trade details
+        function calculateTradeDetails(amount) {
+            const total = amount * currentTrade.rate;
+            const fee = total * 0.005; // 0.5% platform fee
+            const netAmount = total - fee;
+            
+            document.getElementById('tradeTotalDisplay').textContent = total.toFixed(2);
+            document.getElementById('tradeFeeDisplay').textContent = fee.toFixed(2);
+            document.getElementById('tradeNetAmountDisplay').textContent = netAmount.toFixed(2);
+        }
+
+        // Confirm trade
+        function confirmTrade() {
+            let amount = currentTrade.amount;
+            
+            if (currentTrade.action === 'partial') {
+                amount = parseFloat(document.getElementById('partialAmount').value) || 0;
+                if (amount <= 0 || amount > currentTrade.amount) {
+                    alert('Please enter a valid amount');
+                    return;
+                }
+            }
+            
+            // In a real application, you would send this to the server
+            // For demo purposes, we'll just show a success message
+            alert(`Trade confirmed! You ${currentTrade.type === 'buy' ? 'bought' : 'sold'} ${amount} ${currentTrade.fromCurrency} from ${currentTrade.trader}`);
+            closeTradeModal();
+        }
+
+        // ========== CHART INITIALIZATION ==========
+        
+        // Initialize Charts
+        document.addEventListener('DOMContentLoaded', function() {
+            // Currency Distribution Chart (Pie Chart)
+            const currencyCtx = document.getElementById('currencyChart').getContext('2d');
+            const currencyChart = new Chart(currencyCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['USD', 'MMK', 'THB', 'JPY'],
+                    datasets: [{
+                        data: [40, 30, 20, 10],
+                        backgroundColor: [
+                           '#95dfff',
+                            '#8086ff',
+                            '#8b76e6',
+                            '#ff9a3d'
+                        ],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 15,
+                                usePointStyle: true,
+                                pointStyle: 'circle',
+                                font: {
+                                    size: 10
+                                }
+                            }
+                        }
+                    },
+                    cutout: '60%'
+                }
+            });
+        });
+    </script>
+</body>
+</html>
