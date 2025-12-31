@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ACCQURA Login</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inria+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inria Sans', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f0f9f0 0%, #d4edda 25%, #a8e0b8 65%, #7ac29a 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .login-container {
+            background-color: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 420px;
+            padding: 40px 30px;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        
+        .login-container:hover {
+            transform: translateY(-5px);
+        }
+        
+        .logo {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+        
+        .logo h1 {
+            color: #2e7d32;
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: #2d3748;
+            font-weight: 700;
+            font-size: 15px;
+        }
+        
+        .input-container {
+            position: relative;
+        }
+        
+        .input-container i {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #2e7d32;
+            font-size: 18px;
+            z-index: 2;
+            opacity: 0.8;
+        }
+        
+        input[type="email"],
+        input[type="password"] {
+            width: 100%;
+            padding: 14px 16px 14px 50px;
+            background: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 15px;
+            color: #2d3748;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+        }
+        
+        input[type="email"]::placeholder,
+        input[type="password"]::placeholder {
+            color: #a0aec0;
+        }
+        
+        input[type="email"]:focus,
+        input[type="password"]:focus {
+            outline: none;
+            background: white;
+            border-color: #4caf50;
+            box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+        }
+        
+        .options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+        
+        .remember-me {
+            display: flex;
+            align-items: center;
+        }
+        
+        .remember-me input {
+            margin-right: 8px;
+            accent-color: #4caf50;
+        }
+        
+        .remember-me label {
+            font-weight: 400;
+            color: #555;
+            margin-bottom: 0;
+            font-size: 14px;
+        }
+        
+        .forgot-password {
+            color: #2e7d32;
+            text-decoration: none;
+            transition: all 0.3s;
+            font-weight: 500;
+            font-size: 14px;
+        }
+        
+        .forgot-password:hover {
+            color: #1b5e20;
+            text-decoration: underline;
+        }
+        
+        .signin-btn {
+            width: 100%;
+            padding: 14px;
+            background: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 10px 0 20px;
+            box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .signin-btn:hover {
+            background: #43a047;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+        }
+        
+        .signup-link {
+            text-align: center;
+            color: #555;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        
+        .signup-link a {
+            color: #2e7d32;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            border-bottom: 1px dashed #2e7d32;
+            padding-bottom: 1px;
+        }
+        
+        .signup-link a:hover {
+            color: #1b5e20;
+            border-bottom-color: transparent;
+        }
+        
+        /* Notification styles */
+        .notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 15px 25px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            font-size: 14px;
+            font-weight: 600;
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .notification.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(10px);
+        }
+        
+        .notification.success {
+            background: rgba(16, 185, 129, 0.9);
+            color: white;
+        }
+        
+        .notification.error {
+            background: rgba(239, 68, 68, 0.9);
+            color: white;
+        }
+        
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 30px 25px;
+            }
+            
+            .options {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .forgot-password {
+                margin-top: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-container">
+        <div class="logo">
+            <h1>Welcome To ACCQURA</h1>
+            <p>Sign in to your account</p>
+        </div>
+        <form id="login-form" action="../php/testLogin.php" method="POST">
+            <div class="form-group">
+               
+                <div class="input-container">
+                    <i class="fas fa-envelope"></i>
+                    <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                </div>
+            </div>
+            
+            <div class="form-group">
+               
+                <div class="input-container">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                </div>
+            </div>
+            
+            <div class="options">
+                <div class="remember-me">
+                    <input type="checkbox" id="remember" name="remember">
+                    <label for="remember">Remember me</label>
+                </div>
+                <a href="../php/forgot_password_request.php" class="forgot-password">Forgot password?</a>
+            </div>
+            
+            <button type="submit" class="signin-btn" id="login-button">Sign In</button>
+            
+            <p class="signup-link">
+                Don't have an account? <a href="registration.html">Sign Up</a>
+            </p>
+        </form>
+    </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const error = urlParams.get('error');
+    const message = urlParams.get('message');
+    
+    let notificationMessage = '';
+    let notificationType = '';
+
+    if (error === 'not_verified') {
+        notificationMessage = 'Your account is not verified. Please check your email for verification instructions.';
+        notificationType = 'error';
+    } else if (error === 'incorrect_password') {
+        notificationMessage = 'Incorrect password. Please try again.';
+        notificationType = 'error';
+    } else if (error === 'user_not_found') {
+        notificationMessage = 'No account found with this email address.';
+        notificationType = 'error';
+    } else if (error === 'locked') {
+        const seconds = parseInt(urlParams.get('remaining') || '60', 10);
+        showLockCountdown(Number.isFinite(seconds) && seconds > 0 ? seconds : 60);
+    } else if (message === 'registration_successful') {
+        notificationMessage = 'Registration successful! You can now log in.';
+        notificationType = 'success';
+    } else if (message === 'reset_link_sent') {
+        notificationMessage = 'If that email exists, a reset link has been sent.';
+        notificationType = 'success';
+    } else if (message === 'password_reset_success') {
+        notificationMessage = 'Your password has been updated. Please log in.';
+        notificationType = 'success';
+    }
+    
+    if (notificationMessage) {
+        showNotification(notificationMessage, notificationType);
+    }
+});
+
+function showNotification(message, type) {
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = 'notification ' + type;
+    notification.textContent = message;
+    
+    // Add to body
+    document.body.appendChild(notification);
+    
+    // Animate in
+    setTimeout(() => {
+        notification.classList.add('show');
+    }, 10);
+
+    // Animate out and remove after a few seconds
+    setTimeout(() => {
+        notification.classList.remove('show');
+        setTimeout(() => {
+            document.body.removeChild(notification);
+        }, 500);
+    }, 5000); // 5 seconds
+}
+
+function showLockCountdown(seconds) {
+    const form = document.getElementById('login-form');
+    const btn = document.getElementById('login-button');
+    // Disable inputs during lock
+    if (form) {
+        const controls = form.querySelectorAll('input, button');
+        controls.forEach(el => el.disabled = true);
+    }
+    if (btn) btn.disabled = true;
+
+    // Create a persistent notification with countdown text
+    const bar = document.createElement('div');
+    bar.className = 'notification error show';
+    const update = (s) => {
+        const plural = s === 1 ? '' : 's';
+        bar.textContent = `Too many failed attempts. Please wait ${s} second${plural} before trying again.`;
+    };
+    update(seconds);
+    document.body.appendChild(bar);
+
+    let remaining = seconds;
+    const timer = setInterval(() => {
+        remaining -= 1;
+        if (remaining <= 0) {
+            clearInterval(timer);
+            // Navigate to clean URL (remove error/remaining params) to clear stale lock state
+            setTimeout(() => {
+                try {
+                    const url = new URL(window.location.href);
+                    window.location.href = url.origin + url.pathname; // drop all params
+                } catch (e) {
+                    // Fallback: navigate to this page without query
+                    window.location.href = window.location.pathname;
+                }
+            }, 300);
+            return;
+        }
+        update(remaining);
+    }, 1000);
+}
+</script>
+</body>
+</html>

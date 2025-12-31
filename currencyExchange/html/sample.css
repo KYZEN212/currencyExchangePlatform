@@ -1,0 +1,357 @@
+/* --- Color Palette & Variables (Sign Button Green Theme) --- */
+:root {
+    /* Main Action Color (EXACT button color from your login form) */
+    --action-green: #4caf50;    
+    
+    /* Hover/Secondary Action Color (EXACT hover color from your login form) */
+    --action-hover: #43a047;    
+    
+    /* Navbar/Solid Color (Medium Green - adjusted slightly darker than action green for hierarchy) */
+    --primary-bg-solid: #4caf50;; 
+    
+    /* Hero Background Gradient (Slightly adjusted to feature this brighter green as the endpoint) */
+    --main-gradient: linear-gradient(135deg, #f0f9f0 0%, #d5e9db 25%, #b5e4c4 65%, #4caf50 100%);
+    
+    /* Card/UI Background */
+    --card-bg: #FFFFFF;         /* White Card */
+    
+    /* Typography & UI */
+    --text-main: #143525;       /* Very Dark Green/Blue for strong contrast */
+    --text-light: #FFFFFF;      /* White Text on dark backgrounds */
+    --text-muted: #5e7b6d;      /* Muted Green/Grey Text */
+    --input-border: #e0e0e0;    /* Light Grey Border */
+    
+    /* Mapping variables from the original template to the new scheme: */
+    --primary-blue: var(--primary-bg-solid); 
+    --secondary-blue: var(--action-green); 
+    --card-background: var(--card-bg);
+    --text-dark: var(--text-main);
+    --border-light: var(--input-border);
+    --disclaimer-text: var(--text-muted);
+}
+
+/* --- Base Styles --- */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    /* Using a clean font stack for the landing page body */
+    font-family: 'Inria Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.6;
+    background-color: var(--card-background);
+    color: var(--text-dark);
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* --- Navbar (Header) --- */
+.navbar {
+    /* Using #3d8b5c for the solid top bar */
+    background-color: var(--primary-blue); 
+    color: var(--text-light);
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text-light);
+}
+
+.navbar nav ul {
+    list-style: none;
+    display: flex;
+    gap: 25px;
+}
+
+.navbar nav a {
+    color: var(--text-light);
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 500;
+    padding: 5px 0;
+    display: inline-block;
+}
+
+.navbar nav a:hover {
+    color: #f0f9f0; /* Very light shade on hover */
+}
+
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.nav-link {
+    color: var(--text-light);
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.register-btn {
+    /* Using the Sign Button color: #4caf50 */
+    background-color: var(--secondary-blue); 
+    color: var(--text-light);
+    border: none;
+    padding: 8px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.2s;
+}
+
+.register-btn:hover {
+    background-color: var(--action-hover); /* Hover color: #43a047 */
+}
+
+/* --- Hero Section (Uses the Modified Gradient) --- */
+.hero-section {
+    /* Gradient ends with the button color for visual consistency */
+    background: var(--main-gradient); 
+    padding-top: 50px;
+    padding-bottom: 0; 
+    position: relative;
+    
+    color: var(--text-dark); 
+    overflow: hidden; 
+}
+
+.hero-section > .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding-bottom: 100px; 
+}
+
+.hero-content {
+    max-width: 500px;
+    margin-top: 50px;
+}
+
+.hero-content h1 {
+    font-size: 48px;
+    font-weight: 700;
+    margin-bottom: 15px;
+    color: var(--text-dark); 
+}
+
+.hero-content p {
+    font-size: 20px;
+    opacity: 0.8;
+}
+
+/* --- Wave Separator --- */
+.wave-separator {
+    position: absolute;
+    bottom: -1px; 
+    left: 0;
+    width: 100%;
+    line-height: 0;
+    display:none; 
+}
+
+/* --- Conversion Card --- */
+.conversion-card-container {
+    padding-top: 20px;
+    z-index: 10; 
+}
+
+.conversion-card {
+    background-color: var(--card-background); /* White */
+    color: var(--text-dark);
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    width: 550px;
+}
+
+.card-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.tab-btn {
+    background: none;
+    border: none;
+    padding: 15px 25px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    color: var(--text-dark);
+    transition: background-color 0.2s;
+}
+
+.tab-btn:hover:not(.active) {
+    background-color: #f5f5f5;
+}
+
+.tab-btn.active {
+    /* Active tabs use the Sign Button color: #4caf50 */
+    color: var(--secondary-blue); 
+    border-bottom: 3px solid var(--secondary-blue);
+}
+
+.conversion-form {
+    padding: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 15px;
+}
+
+.form-group {
+    flex: 1;
+    min-width: 150px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 14px;
+    color: var(--text-muted); /* Muted Text */
+    margin-bottom: 5px;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--border-light);
+    border-radius: 4px;
+    font-size: 16px;
+    appearance: none; 
+}
+
+.select-box {
+    position: relative;
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--border-light);
+    border-radius: 4px;
+    padding: 0 10px;
+}
+
+.select-box::after {
+    content: '\f0d7'; 
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    pointer-events: none;
+}
+
+.select-box select {
+    border: none;
+    padding-left: 5px;
+}
+
+.flag-icon {
+    width: 20px;
+    height: 15px;
+    border: 1px solid var(--border-light);
+}
+
+.convert-btn {
+    /* Conversion button uses the Sign Button color: #4caf50 */
+    background-color: var(--secondary-blue); 
+    color: var(--text-light);
+    border: none;
+    padding: 10px 25px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 16px;
+    height: 42px; 
+    transition: background-color 0.2s;
+    min-width: 100px;
+}
+
+.convert-btn:hover {
+    background-color: var(--action-hover); /* Hover color: #43a047 */
+}
+
+
+/* --- Rate Disclaimer Bar --- */
+.disclaimer-bar {
+    background-color: var(--card-background); /* White */
+    padding: 20px 0;
+    text-align: center;
+    font-size: 14px;
+    color: var(--disclaimer-text);
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.disclaimer-bar p {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.disclaimer-bar a {
+    /* Link uses the Sign Button color: #4caf50 */
+    color: var(--secondary-blue); 
+    text-decoration: none;
+}
+
+/* --- Features Section --- */
+.features-section {
+    padding: 60px 0;
+}
+
+.features-section > .container {
+    display: flex;
+    gap: 30px;
+    align-items: stretch;
+}
+
+.feature-box {
+    flex: 1;
+    padding: 30px;
+    border-radius: 8px;
+    /* Use a light color derived from the gradient start point */
+    background-color: #f0f9f0; 
+    min-height: 250px;
+}
+
+.primary-feature {
+    /* Slightly more pronounced light green tint from the gradient middle */
+    background-color: #d5e9db; 
+}
+
+.secondary-feature {
+    /* Use white for high contrast */
+    background-color: var(--card-bg); 
+}
+
+.feature-title {
+    /* Title uses the Sign Button color: #4caf50 */
+    color: var(--secondary-blue); 
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.feature-box h2 {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 15px;
+    color: var(--text-dark); /* Dark Text */
+}
+
+.feature-box p {
+    font-size: 16px;
+    line-height: 1.5;
+    color: var(--text-muted);
+}

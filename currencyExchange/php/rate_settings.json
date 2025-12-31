@@ -1,0 +1,20 @@
+{
+    "global": {
+        "mode": "percent",
+        "value": 0
+    },
+    "targets": {
+        "MMK": {
+            "mode": "percent",
+            "value": 86
+        },
+        "THB": {
+            "mode": "percent",
+            "value": 0
+        },
+        "JPY": {
+            "mode": "percent",
+            "value": 0
+        }
+    }
+}

@@ -1,0 +1,10 @@
+[2025-12-04 09:20:45] ---- reset_password_submit START ----
+[2025-12-04 09:20:45] Validation failed: mismatch
+[2025-12-04 09:20:57] ---- reset_password_submit START ----
+[2025-12-04 09:20:57] DB connected
+[2025-12-04 09:20:57] Password updated and token marked used for user_id=21
+[2025-12-04 09:20:57] Success redirect to login
+[2025-12-10 12:40:17] ---- reset_password_submit START ----
+[2025-12-10 12:40:17] DB connected
+[2025-12-10 12:40:17] Password updated and token marked used for user_id=25
+[2025-12-10 12:40:17] Success redirect to login

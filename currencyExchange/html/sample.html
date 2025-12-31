@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XE Currency Exchange Clone</title>
+    <link rel="stylesheet" href="sample.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <div id="scroll-progress"></div>
+    <header class="navbar">
+        <div class="logo">ACCQURA</div>
+        <nav>
+            <ul>
+                <li><a href="#">Personal</a></li>
+                <li><a href="#">Business</a></li>
+                <li><a href="#">Send money</a></li>
+                <li class="dropdown">
+                    <a href="#">Money transfers <i class="fas fa-caret-down"></i></a>
+                </li>
+                <li class="dropdown">
+                    <a href="#">Converter <i class="fas fa-caret-down"></i></a>
+                </li>
+                <li class="dropdown">
+                    <a href="#">Tools <i class="fas fa-caret-down"></i></a>
+                </li>
+                <li class="dropdown">
+                    <a href="#">Resources <i class="fas fa-caret-down"></i></a>
+                </li>
+            </ul>
+        </nav>
+        <div class="nav-actions">
+            <a href="#" class="nav-link">Help</a>
+            <a href="#" class="nav-link">Login</a>
+            <button class="register-btn">Register</button>
+        </div>
+    </header>
+
+    <div class="hero-section">
+        <div class="container">
+            <div class="conversion-card-container">
+                <div class="conversion-card">
+                    <div class="card-tabs">
+                        <button class="tab-btn active"><i class="fas fa-exchange-alt"></i> Convert</button>
+                        <button class="tab-btn"><i class="fas fa-paper-plane"></i> Send</button>
+                        <button class="tab-btn"><i class="fas fa-chart-line"></i> Charts</button>
+                        <button class="tab-btn"><i class="fas fa-bell"></i> Alerts</button>
+                    </div>
+                    
+                    <div class="conversion-form">
+                        <div class="form-group">
+                            <label for="amount">Amount</label>
+                            <input type="text" id="amount" value="1.00">
+                        </div>
+                        <div class="form-group from-group">
+                            <label for="from">From</label>
+                            <div class="select-box">
+                                <img src="https://flagcdn.com/us.svg" alt="US Flag" class="flag-icon">
+                                <select id="from">
+                                    <option>USD - US Dollar</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group to-group">
+                            <label for="to">To</label>
+                            <div class="select-box">
+                                <img src="https://flagcdn.com/eu.svg" alt="EU Flag" class="flag-icon">
+                                <select id="to">
+                                    <option>EUR - Euro</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button class="convert-btn">Convert</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hero-content">
+                <h1>Global currency conversions & money transfers</h1>
+                <p>Leading the world information and transfers for 30+ years</p>
+            </div>
+        </div>
+        
+        <div class="wave-separator">
+            <svg viewBox="0 0 1440 100" preserveAspectRatio="none" style="display:block;">
+                <path d="M1440,80 C1100,20 800,50 600,80 C400,100 0,60 0,60 L0,100 L1440,100 Z" style="fill: white;"></path>
+            </svg>
+        </div>
+    </div>
+
+    <div class="disclaimer-bar">
+        <p>We use the mid-market rate for our Converter. This is the rate banks use. Learn to view send rates.</p>
+    </div>
+
+    <section class="features-section">
+        <div class="container">
+            <div class="feature-box primary-feature">
+                <p class="feature-title"><i class="fas fa-paper-plane"></i> Send money online</p>
+                <h2>International transfers made easy</h2>
+                <p>At XE, making transfers fast, smart, easy, and secure. Send money in mere clicks, to 170+ countries.</p>
+            </div>
+            <div class="feature-box secondary-feature">
+                <p class="feature-title">XE for business</p>
+                <h2>Global business payments simplified</h2>
+                <p>At XE Business, you're enabling cross-border payments, hedging and FX risk management solutions.</p>
+            </div>
+        </div>
+    </section>
+
+    </body>
+</html>

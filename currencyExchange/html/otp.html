@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Verify Login Code</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inria+Sans:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * { 
+      box-sizing: border-box; 
+      font-family: 'Inria Sans', sans-serif; 
+      margin: 0;
+      padding: 0;
+    }
+    
+    body { 
+      background: linear-gradient(135deg, #f0f9f0 0%, #d4edda 25%, #a8e0b8 65%, #7ac29a 100%); 
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+      color: #2d3748;
+    }
+    
+    .container { 
+      background: #fff; 
+      border-radius: 16px; 
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
+      width: 100%; 
+      max-width: 420px; 
+      padding: 40px 30px;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+    
+    h1 { 
+      font-size: 24px; 
+      margin: 0 0 8px; 
+      color: #2e7d32;
+      text-align: center;
+    }
+    
+    p { 
+      margin: 0 0 20px; 
+      color: #555;
+      text-align: center;
+      font-size: 15px;
+      line-height: 1.5;
+    }
+    
+    .code-inputs { 
+      display: flex; 
+      gap: 10px; 
+      justify-content: center; 
+      margin: 30px 0; 
+    }
+    
+    .code-inputs input { 
+      width: 46px; 
+      height: 56px; 
+      font-size: 20px; 
+      text-align: center; 
+      border: 1px solid #e0e0e0; 
+      background: #f8f9fa;
+      border-radius: 10px; 
+      outline: none;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+    }
+    
+    .code-inputs input:focus { 
+      border-color: #4caf50;
+      box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+    }
+    
+    .btn { 
+      width: 100%; 
+      padding: 14px; 
+      background: #4caf50; 
+      color: #fff; 
+      border: none; 
+      border-radius: 10px; 
+      font-size: 15px; 
+      font-weight: 600; 
+      cursor: pointer; 
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin: 10px 0 20px;
+      box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
+    }
+    
+    .btn:hover { 
+      background: #43a047;
+      transform: translateY(-1px); 
+      box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+    }
+    
+    .footer { 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center; 
+      margin-top: 20px; 
+      font-size: 14px;
+    }
+    
+    .link { 
+      color: #2e7d32;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.3s;
+      border-bottom: 1px dashed transparent;
+      padding-bottom: 1px;
+    }
+    
+    .link:hover { 
+      color: #1b5e20;
+      border-bottom-color: #2e7d32;
+    }
+    
+    .notification { 
+      position: fixed; 
+      top: 20px; 
+      left: 50%; 
+      transform: translateX(-50%); 
+      padding: 12px 24px; 
+      border-radius: 8px; 
+      background: rgba(239, 68, 68, 0.95); 
+      color: #fff; 
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1); 
+      font-weight: 500; 
+      display: none;
+      z-index: 1000;
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+    }
+    
+    .notification.show { 
+      display: block;
+      animation: fadeIn 0.3s ease-out;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translate(-50%, -10px); }
+      to { opacity: 1; transform: translate(-50%, 0); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Two‑Step Verification</h1>
+    <p>We've sent a verification code to your email. Please enter the 6-digit code below to continue.</p>
+    <p id="timer" style="text-align:center;color:#2e7d32;font-weight:600;margin:15px 0 5px;font-size:14px;">Code expires in <span id="count" style="font-weight:700;">05:00</span></p>
+
+    <form id="otp-form" method="POST" action="../php/verify_otp.php">
+      <div class="code-inputs">
+        <input type="text" inputmode="numeric" maxlength="1" pattern="[0-9]" required>
+        <input type="text" inputmode="numeric" maxlength="1" pattern="[0-9]" required>
+        <input type="text" inputmode="numeric" maxlength="1" pattern="[0-9]" required>
+        <input type="text" inputmode="numeric" maxlength="1" pattern="[0-9]" required>
+        <input type="text" inputmode="numeric" maxlength="1" pattern="[0-9]" required>
+        <input type="text" inputmode="numeric" maxlength="1" pattern="[0-9]" required>
+      </div>
+      <input type="hidden" name="otp" id="otp-hidden" />
+      <button type="submit" class="btn">Verify</button>
+    </form>
+
+    <div class="footer">
+      <a class="link" href="../php/verify_otp.php?action=resend">Resend code</a>
+      <a class="link" href="login.html">Back to login</a>
+    </div>
+  </div>
+
+  <div id="note" class="notification"></div>
+
+  <script>
+    const inputs = Array.from(document.querySelectorAll('.code-inputs input'));
+    const hidden = document.getElementById('otp-hidden');
+    const note = document.getElementById('note');
+    const countEl = document.getElementById('count');
+    const form = document.getElementById('otp-form');
+    const submitBtn = form.querySelector('button[type="submit"]');
+
+    function show(msg) {
+      note.textContent = msg; note.classList.add('show'); setTimeout(()=>note.classList.remove('show'), 4000);
+    }
+
+    inputs.forEach((inp, idx) => {
+      inp.addEventListener('input', e => {
+        e.target.value = e.target.value.replace(/[^0-9]/g, '').slice(0,1);
+        if (e.target.value && idx < inputs.length - 1) inputs[idx+1].focus();
+      });
+      inp.addEventListener('keydown', e => {
+        if (e.key === 'Backspace' && !inp.value && idx > 0) inputs[idx-1].focus();
+      });
+    });
+
+    document.getElementById('otp-form').addEventListener('submit', e => {
+      const code = inputs.map(i => i.value).join('');
+      if (code.length !== 6) { e.preventDefault(); show('Enter all 6 digits.'); return; }
+      hidden.value = code;
+    });
+
+    // Read message param
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const msg = params.get('m');
+      if (msg) show(decodeURIComponent(msg));
+    } catch (e) {}
+
+    // 5-minute countdown timer
+    let remaining = 300; // seconds
+    function fmt(s){ const m = Math.floor(s/60); const r = s%60; return `${String(m).padStart(2,'0')}:${String(r).padStart(2,'0')}`; }
+    countEl.textContent = fmt(remaining);
+    const t = setInterval(() => {
+      remaining -= 1;
+      if (remaining <= 0) {
+        clearInterval(t);
+        countEl.textContent = '00:00';
+        // disable all inputs and submit when expired
+        inputs.forEach(i => i.disabled = true);
+        submitBtn.disabled = true;
+        show('Code expired. Click Resend.');
+        return;
+      }
+      countEl.textContent = fmt(remaining);
+    }, 1000);
+  </script>
+</body>
+</html>
